@@ -1,0 +1,30 @@
+{% extends "home.html" %}
+
+{% block content %}
+<div class="container">
+    {% for item in items %}
+    <div class="list-element row align-items-center mb-3">
+        <div class="col-md-4">
+            <h5>{{ item.title }}</h5>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ item.video_url }}" target="_blank" class="btn btn-primary">Watch Video</a>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkbox1_{{ loop.index }}">
+                <label class="form-check-label" for="checkbox1_{{ loop.index }}">
+                    Learned 
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkbox2_{{ loop.index }}">
+                <label class="form-check-label" for="checkbox2_{{ loop.index }}">
+                   Proficient 
+                </label>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

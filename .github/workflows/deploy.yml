@@ -1,0 +1,32 @@
+# name: Deploy to Server
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v3
+
+#       - name: Install SSH Key and Known Hosts
+#         uses: shimataro/ssh-key-action@v2
+#         with:
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
+#       - name: Execute Remote Commands
+#         uses: appleboy/ssh-action@v0.1.5
+#         with:
+#           host: 64.227.80.136
+#           username: root 
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           script: |
+#             cd ../var/www/jk_flask/
+#             git pull
+#             venv/bin/pip install -r requirements.txt
+#             sudo systemctl restart jk_flask.service
