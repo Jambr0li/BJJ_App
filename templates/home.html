@@ -7,14 +7,28 @@
     .progress {
         margin-bottom: 20px;
     }
-    .list-group-item {
+    /* .checkboxes {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-    }
-    .checkboxes {
-        display: flex;
+        justify-content: center;
         gap: 10px;
+    } */
+    .table td, .table th {
+        vertical-align: middle;
+        text-align: center;
+    }
+    .table th:first-child, .table td:first-child {
+        text-align: left;
+    }
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+    .form-check-input {
+        transform: scale(1.3);
+        margin: 0.5rem;
     }
 </style>
 {% endblock %}
@@ -42,27 +56,38 @@
         </div>
     </div>
 
-    <ul class="list-group mt-4">
-        {% for item in items %}
-        <li class="list-group-item">
-            <div>
-                <a href="{{ item.video_url }}" target="_blank">{{ item.title }}</a>
-            </div>
-            <div class="checkboxes">
-                <div class="form-check">
-                    <input class="form-check-input reviewed-checkbox" type="checkbox" data-item-id="{{ item.id }}"
-                           {% if item.id in reviewed %}checked{% endif %}>
-                    <label class="form-check-label">Reviewed</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input learned-checkbox" type="checkbox" data-item-id="{{ item.id }}"
-                           {% if item.id in learned %}checked{% endif %}>
-                    <label class="form-check-label">Learned</label>
-                </div>
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Reviewed</th>
+                <th>Learned</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td><a href="{{ item.video_url }}" target="_blank">{{ item.title }}</a></td>
+                <td>
+                    <div class="checkbox-container">
+                        <input class="form-check-input reviewed-checkbox" type="checkbox" data-item-id="{{ item.id }}"
+                               {% if item.id in reviewed %}checked{% endif %}>
+                    </div>
+                    <!-- <input class="form-check-input reviewed-checkbox" type="checkbox" data-item-id="{{ item.id }}" -->
+                           <!-- {% if item.id in reviewed %}checked{% endif %}> -->
+                </td>
+                <td>
+                    <div class="checkbox-container">
+                        <input class="form-check-input learned-checkbox" type="checkbox" data-item-id="{{ item.id }}"
+                               {% if item.id in learned %}checked{% endif %}>
+                    </div>
+                    <!-- <input class="form-check-input learned-checkbox" type="checkbox" data-item-id="{{ item.id }}" -->
+                           <!-- {% if item.id in learned %}checked{% endif %}> -->
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
 
