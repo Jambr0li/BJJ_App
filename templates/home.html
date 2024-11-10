@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Video List{% endblock %}
+
+{% block head %}
+<style>
+    .progress {
+        margin-bottom: 20px;
+    }
+    .list-group-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .checkboxes {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mt-4">Video List</h1>
+
+    <div class="mt-4">
+        <label>Reviewed Progress: <span id="reviewed-progress-text">{{ reviewed_progress }}%</span></label>
+        <div class="progress">
+            <div id="reviewed-progress-bar" class="progress-bar bg-success" role="progressbar" style="width: {{ reviewed_progress }}%;"
+                 aria-valuenow="{{ reviewed_progress }}" aria-valuemin="0" aria-valuemax="100">
+                {{ reviewed_progress }}%
+            </div>
+        </div>
+    </div>
+    <div>
+        <label>Learned Progress: <span id="learned-progress-text">{{ learned_progress }}%</span></label>
+        <div class="progress">
+            <div id="learned-progress-bar" class="progress-bar bg-info" role="progressbar" style="width: {{ learned_progress }}%;"
+                 aria-valuenow="{{ learned_progress }}" aria-valuemin="0" aria-valuemax="100">
+                {{ learned_progress }}%
+            </div>
+        </div>
+    </div>
+
+    <ul class="list-group mt-4">
+        {% for item in items %}
+        <li class="list-group-item">
+            <div>
+                <a href="{{ item.video_url }}" target="_blank">{{ item.title }}</a>
+            </div>
+            <div class="checkboxes">
+                <div class="form-check">
+                    <input class="form-check-input reviewed-checkbox" type="checkbox" data-item-id="{{ item.id }}"
+                           {% if item.id in reviewed %}checked{% endif %}>
+                    <label class="form-check-label">Reviewed</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input learned-checkbox" type="checkbox" data-item-id="{{ item.id }}"
+                           {% if item.id in learned %}checked{% endif %}>
+                    <label class="form-check-label">Learned</label>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function(){
+        // Define the update_status_url variable using Jinja2
+        var update_status_url = "{{ url_for('update_status') }}";
+
+        $('.reviewed-checkbox, .learned-checkbox').change(function(){
+            var itemId = $(this).data('item-id');
+            var statusType = $(this).hasClass('reviewed-checkbox') ? 'reviewed' : 'learned';
+            var checked = $(this).is(':checked');
+
+            $.ajax({
+                url: update_status_url,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    'item_id': itemId,
+                    'status_type': statusType,
+                    'checked': checked
+                }),
+                success: function(data){
+                    // Update progress bars
+                    $('#reviewed-progress-bar')
+                        .css('width', data.reviewed_progress + '%')
+                        .text(data.reviewed_progress + '%')
+                        .attr('aria-valuenow', data.reviewed_progress);
+                    $('#learned-progress-bar')
+                        .css('width', data.learned_progress + '%')
+                        .text(data.learned_progress + '%')
+                        .attr('aria-valuenow', data.learned_progress);
+                    $('#reviewed-progress-text').text(data.reviewed_progress + '%');
+                    $('#learned-progress-text').text(data.learned_progress + '%');
+                },
+                error: function(xhr){
+                    console.log("Error updating status");
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
